@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;                          
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;// you have to add these 2 
+using System.Data.SqlClient;//
+
+namespace crud2
+{
+    public partial class WebForm1 : System.Web.UI.Page
+    {
+        SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\learning.mdf;Integrated Security=True");
+
+      
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+            }
+            con.Open();
+ 
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)//insert button code
+        {
+          
+            String qry = "insert into task values ('" + id.Text + "','" + name.Text + "','" + contact.Text + "','" + address.Text + "')";
+            SqlCommand cmd = new SqlCommand(qry, con);
+            cmd.ExecuteNonQuery();
+            id.Text = "";
+            name.Text = "";
+            contact.Text = "";
+            address.Text = "";
+
+            Response.Write("data inserted");
+   
+
+
+
+        }
+
+        protected void Button4_Click(object sender, EventArgs e)//view button code
+        {
+            String qry = "select * from task ";
+            SqlCommand cmd = new SqlCommand(qry, con);
+            cmd.ExecuteNonQuery();
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            da.Fill(dt);
+            GridView1.DataSource = dt;
+            GridView1.DataBind();
+            Response.Write("displaying data");
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)//update button code
+        {
+            String qry = "update task set name='"+name.Text+"',contact='"+contact.Text+"',address='"+address.Text+"'where id=('" + id.Text + "')";
+            SqlCommand cmd = new SqlCommand(qry, con);
+            cmd.ExecuteNonQuery();
+            id.Text = "";
+            name.Text = "";
+            contact.Text = "";
+            address.Text = "";
+            Response.Write("updating data");
+        }
+
+        protected void Button3_Click(object sender, EventArgs e)//delete button code
+        {
+            String qry = "delete from task where id= ('" + id.Text + "')";
+            SqlCommand cmd = new SqlCommand(qry, con);
+            cmd.ExecuteNonQuery();
+            id.Text = "";
+            Response.Write("data deleted");
+
+        }
+    }
+}
